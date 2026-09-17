@@ -26,7 +26,7 @@ formproduto.addEventListener("submit", function (event) {
     listaDeProdutos.push(novoProduto);
 
     renderizarTabela();
-    formproduto.reseet();
+    formproduto.reset();
 });
 
 function renderizarTabela() {
