@@ -1,12 +1,37 @@
 class Produto {
+    #preco;
+    #quantidade;
+
     constructor(nome, preco, quantidade) {
+        if (!nome || nome.trim() === "") {
+            throw new Error("O nome do produto não pode estar em branco.");
+        }
+        
+        const precoNum = parseFloat(preco);
+        if (isNaN(precoNum) || precoNum <= 0) {
+            throw new Error("O preço deve ser um valor maior que zero.");
+        }
+
+        const qtdNum = parseInt(quantidade);
+        if (isNaN(qtdNum) || qtdNum <= 0) {
+            throw new Error("A quantidade deve ser um valor maior que zero.");
+        }
+
         this.nome = nome;
-        this.preco = parseFloat(preco);
-        this.quantidade = parseInt(quantidade);
+        this.#preco = precoNum;
+        this.#quantidade = qtdNum;
+    }
+
+    get preco() {
+        return this.#preco;
+    }
+
+    get quantidade() {
+        return this.#quantidade;
     }
 
     calcularSubtotal() {
-        return this.preco * this. quantidade
+        return this.#preco * this.#quantidade;
     }
 }
 
@@ -21,12 +46,16 @@ formproduto.addEventListener("submit", function (event) {
     const precoInput = document.getElementById("preco").value;
     const quantidadeInput = document.getElementById("quantidade").value;
 
-    const novoProduto = new Produto(nomeInput, precoInput, quantidadeInput);
+    try {
+        const novoProduto = new Produto(nomeInput, precoInput, quantidadeInput);
 
-    listaDeProdutos.push(novoProduto);
+        listaDeProdutos.push(novoProduto);
 
-    renderizarTabela();
-    formproduto.reset();
+        renderizarTabela();
+        formproduto.reset();
+    } catch (error) {
+        alert(error.message);
+    }
 });
 
 function renderizarTabela() {
