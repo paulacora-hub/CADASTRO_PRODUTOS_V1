@@ -2,7 +2,7 @@ class Produto {
     #preco;
     #quantidade;
 
-    constructor(nome, preco, quantidade) {
+    constructor(nome, preco, quantity) {
         if (!nome || nome.trim() === "") {
             throw new Error("O nome do produto não pode estar em branco.");
         }
@@ -12,7 +12,7 @@ class Produto {
             throw new Error("O preço deve ser um valor maior que zero.");
         }
 
-        const qtdNum = parseInt(quantidade);
+        const qtdNum = parseInt(quantity);
         if (isNaN(qtdNum) || qtdNum <= 0) {
             throw new Error("A quantidade deve ser um valor maior que zero.");
         }
@@ -38,6 +38,7 @@ class Produto {
 const listaDeProdutos = [];
 
 const formproduto = document.getElementById("produto-form");
+const totalEstoqueTexto = document.getElementById("total-estoque");
 
 formproduto.addEventListener("submit", function (event) {
     event.preventDefault();
@@ -52,11 +53,17 @@ formproduto.addEventListener("submit", function (event) {
         listaDeProdutos.push(novoProduto);
 
         renderizarTabela();
+        atualizarTotalEstoque();
         formproduto.reset();
     } catch (error) {
         alert(error.message);
     }
 });
+
+function atualizarTotalEstoque() {
+    const total = listaDeProdutos.reduce((acc, produto) => acc + produto.calcularSubtotal(), 0);
+    totalEstoqueTexto.textContent = `Total em estoque: R$ ${total.toFixed(2).replace('.', ',')}`;
+}
 
 function renderizarTabela() {
     const tabelaBody = document.querySelector("#tabela-produtos tbody");
