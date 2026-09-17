@@ -39,6 +39,7 @@ const listaDeProdutos = [];
 
 const formproduto = document.getElementById("produto-form");
 const totalEstoqueTexto = document.getElementById("total-estoque");
+const botaoLimpar = document.getElementById("limpar-tabela");
 
 formproduto.addEventListener("submit", function (event) {
     event.preventDefault();
@@ -60,6 +61,18 @@ formproduto.addEventListener("submit", function (event) {
     }
 });
 
+botaoLimpar.addEventListener("click", function () {
+    listaDeProdutos.length = 0;
+    renderizarTabela();
+    atualizarTotalEstoque();
+});
+
+function removerProduto(index) {
+    listaDeProdutos.splice(index, 1);
+    renderizarTabela();
+    atualizarTotalEstoque();
+}
+
 function atualizarTotalEstoque() {
     const total = listaDeProdutos.reduce((acc, produto) => acc + produto.calcularSubtotal(), 0);
     totalEstoqueTexto.textContent = `Total em estoque: R$ ${total.toFixed(2).replace('.', ',')}`;
@@ -70,7 +83,7 @@ function renderizarTabela() {
 
     tabelaBody.innerHTML = "";
 
-    listaDeProdutos.forEach((produto) => {
+    listaDeProdutos.forEach((produto, index) => {
         const linha = document.createElement("tr");
 
         linha.innerHTML = `
@@ -79,7 +92,7 @@ function renderizarTabela() {
         <td>${produto.quantidade}</td>
         <td>R$ ${produto.calcularSubtotal().toFixed(2)}</td>
         <td>
-            <button class="btn-remover">Remover</button>
+            <button class="btn-remover" onclick="removerProduto(${index})">Remover</button>
         </td>
         `;
 
