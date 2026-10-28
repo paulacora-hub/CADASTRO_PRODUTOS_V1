@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de estoque - POO</title>
+    <title>Sistema de estoque - V4</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Cadastro de produto</h1>
+        <img src="paula.jpg" alt="">
+        <div class="foto-perfil"></div>
+
+        <h1>Cadastro de produto </h1>
         <form id="produto-form">
             <div class="form-group">
                 <label for="nome">Nome do produto:</label>
@@ -25,10 +28,17 @@
             <button type="submit" class="btn-primary">Adicionar Produto</button>
             <button type="button" id="cancelar-edicao" class="btn-cancelar" hidden>Cancelar edição</button>
         </form>
+        
         <div class="resumo-container">
             <h3 id="total-estoque">Total em estoque: R$ 0,00</h3>
             <button id="limpar-tabela" class="btn-danger" type="button">Limpar tudo</button>
         </div>
+
+        <div class="busca-container">
+            <label for="campo-busca">Pesquisar produto 🔍:</label>
+            <input type="text" id="campo-busca" placeholder="Digite o nome do produto para filtrar...">
+        </div>
+
         <table id="tabela-produtos">
             <thead>
                 <tr>

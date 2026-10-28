@@ -4,151 +4,229 @@
     padding: 0;
 }
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f6f9;
-    color: #333;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #faf9f6; /* Off-white limpo e elegante */
+    color: #4f3f41; /* Texto cinza escuro levemente rosado para suavizar */
     padding: 20px;
 }
+
+/* Oculta a tag img crua para evitar duplicações desordenadas */
+.container > img {
+    display: none;
+}
+
+/* ==========================================
+   ⚙️ CONFIGURAÇÃO DA FOTO "paula.jpg" 
+   ========================================== */
+.foto-perfil {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 2px solid #ff8da1; /* Troca do dourado por uma borda Rosa Bem Definida */
+    box-shadow: 0 4px 15px rgba(255, 141, 161, 0.2);
+    background-image: url('paula.jpg'); 
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.foto-perfil:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 141, 161, 0.35);
+}
+
 .container {
     max-width: 850px;
     background-color: #ffffff;
     margin: 30px auto;
-    padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(255, 182, 193, 0.15); /* Sombra sutilmente rosada */
+    position: relative;
+    border: 1px solid #ffe4e8;
 }
 label {
-    font-weight: bold;
-    font-size: 14px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #8a7375; /* Tom neutro rosado opaco */
+    display: inline-block;
+    margin-bottom: 4px;
 }
 input {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
+    padding: 12px;
+    border: 1px solid #ffd0d8; /* Borda dos inputs em rosa pastel evidente */
+    border-radius: 8px;
+    font-size: 15px;
+    color: #4f3f41;
+    background-color: #ffffff;
+    transition: all 0.2s ease;
+}
+input:focus {
+    outline: none;
+    border-color: #ff69b4; /* Foco acende em Rosa Chiclete */
+    box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.15);
 }
 h1 {
     text-align: center;
-    margin-bottom: 20px;
-    color: #1e293b;
+    margin-bottom: 30px;
+    color: #ff69b4; /* Título principal em Rosa Vibrante/Normal */
+    font-size: 26px;
+    font-weight: 700;
+    padding-right: 70px;
+    letter-spacing: -0.5px;
 }
 form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin-bottom: 25px;
+    gap: 16px;
+    margin-bottom: 30px;
 }
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 5px;
-}
-input:focus {
-    outline: none;
-    border-color: #2563eb;
+    gap: 6px;
 }
 button {
-    padding: 10px 15px;
-    font-size: 15px;
-    font-weight: bold;
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 600;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s ease;
 }
 .btn-primary {
-    background-color: #2563eb;
-    color: white;
+    background-color: #ff8da1; /* Botão de Adicionar em Rosa Normal Médio */
+    color: #ffffff;
 }
 .btn-primary:hover {
-    background-color: #1d4ed8;
+    background-color: #ff69b4;
+    transform: translateY(-1px);
 }
 .btn-danger {
-    background-color: #dc2626;
-    color: white;
+    background-color: #fff0f2; /* Fundo rosa bem clarinho */
+    color: #d6284c; /* Texto em rosa escuro/vermelho neutro para o perigo */
+    border: 1px solid #ffd0d8;
 }
 .btn-danger:hover {
-    background-color: #b91c1c;
+    background-color: #ffd0d8;
 }
 .btn-cancelar {
-    background-color: #64748b;
-    color: white;
+    background-color: #f5f5f4;
+    color: #78716c;
+    border: 1px solid #e7e5e4;
 }
 .btn-cancelar:hover {
-    background-color: #475569;
+    background-color: #e7e5e4;
 }
 .resumo-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 12px;
-    margin-bottom: 15px;
-    padding-top: 15px;
-    border-top: 2px solid #e2e8f0;
+    margin-bottom: 24px;
+    padding-top: 24px;
+    border-top: 2px dashed #ffd0d8; /* Divisor tracejado rosa */
 }
 #total-estoque {
     font-size: 18px;
-    color: #0f172a;
+    color: #ff477e; /* Destaque numérico em tom rosa escuro vibrante */
+    font-weight: 700;
 }
+
+/* V4: Caixa de Busca Dinâmica com Fundo Rosa Claro */
+.busca-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background-color: #fff0f3; /* Fundo rosa algodão doce */
+    border: 1px solid #ffccd5;
+    border-radius: 10px;
+}
+.busca-container label {
+    color: #d6284c; /* Legenda combinando com o contexto rosa */
+}
+.busca-container input {
+    border: 1px solid #ffd0d8;
+    background-color: #ffffff;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
 }
 th, td {
-    border: 1px solid #cbd5e1;
-    padding: 10px;
+    padding: 14px;
     text-align: center;
+    font-size: 14px;
 }
 th {
-    background-color: #2563eb;
-    color: white;
+    background-color: #ffe3e8; /* Cabeçalho da tabela rosa médio */
+    color: #ab4758;
+    font-weight: 600;
+    border-bottom: 2px solid #ffb3c1;
 }
-tbody tr:nth-child(even) {
-    background-color: #f8fafc;
+td {
+    border-bottom: 1px solid #fff0f2;
+    background-color: #ffffff;
+    color: #5c4749;
 }
+tbody tr:hover td {
+    background-color: #fff5f7; /* Hover sutil e puramente rosado nas linhas */
+}
+.mensagem-vazia {
+    padding: 30px;
+    color: #baa3a6;
+    font-style: italic;
+    background-color: #ffffff;
+}
+
 .btn-remover {
-    background-color: #ef4444;
-    color: white;
-    padding: 7px 10px;
-    font-size: 12px;
-    margin: 3px;
+    background-color: transparent;
+    color: #d6284c;
+    padding: 6px 12px;
+    font-size: 13px;
+    margin: 2px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: background-color 0.2s;
 }
 .btn-remover:hover {
-    background-color: #dc2626;
+    background-color: #fff0f2;
 }
 .btn-editar {
-    background-color: #16a34a;
-    color: white;
-    padding: 7px 10px;
-    font-size: 12px;
-    margin: 3px;
+    background-color: transparent;
+    color: #ff69b4; /* Ação de editar destacada no rosa clássico */
+    padding: 6px 12px;
+    font-size: 13px;
+    margin: 2px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: background-color 0.2s;
 }
 .btn-editar:hover {
-    background-color: #15803d;
+    background-color: #fff0f2;
 }
 [hidden] {
     display: none !important;
 }
+
 @media (max-width: 600px) {
-    body {
-        padding: 8px;
+    .foto-perfil {
+        position: static;
+        margin: 0 auto 20px auto;
+        display: block;
+    }
+    h1 {
+        padding-right: 0;
     }
     .container {
-        margin: 10px auto;
-        padding: 12px;
-        overflow-x: auto;
-    }
-    table {
-        min-width: 550px;
-    }
-    .resumo-container {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-    th, td {
-        padding: 7px;
-        font-size: 12px;
+        padding: 16px;
     }
 }
