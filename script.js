@@ -1,101 +1,152 @@
 class Produto {
-    #preco;
-    #quantidade;
-
-    constructor(nome, preco, quantity) {
-        if (!nome || nome.trim() === "") {
-            throw new Error("O nome do produto não pode estar em branco.");
-        }
-        
-        const precoNum = parseFloat(preco);
-        if (isNaN(precoNum) || precoNum <= 0) {
-            throw new Error("O preço deve ser um valor maior que zero.");
-        }
-
-        const qtdNum = parseInt(quantity);
-        if (isNaN(qtdNum) || qtdNum <= 0) {
-            throw new Error("A quantidade deve ser um valor maior que zero.");
-        }
-
+    constructor(nome, preco, quantidade) {
         this.nome = nome;
-        this.#preco = precoNum;
-        this.#quantidade = qtdNum;
+        this.preco = parseFloat(preco);
+        this.quantidade = parseInt(quantidade);
     }
-
-    get preco() {
-        return this.#preco;
-    }
-
-    get quantidade() {
-        return this.#quantidade;
-    }
-
     calcularSubtotal() {
-        return this.#preco * this.#quantidade;
+        return this.preco * this.quantidade;
     }
 }
-
 const listaDeProdutos = [];
-
-const formproduto = document.getElementById("produto-form");
-const totalEstoqueTexto = document.getElementById("total-estoque");
-const botaoLimpar = document.getElementById("limpar-tabela");
-
-formproduto.addEventListener("submit", function (event) {
+const CHAVE_STORAGE = "sistema_estoque_produtos";
+let indiceEdicao = null;
+function salvarNoLocalStorage() {
+    localStorage.setItem(CHAVE_STORAGE, JSON.stringify(listaDeProdutos));
+}
+function carregarDoLocalStorage() {
+    const dadosSalvos = localStorage.getItem(CHAVE_STORAGE);
+    if (dadosSalvos) {
+        try {
+            const produtosObjetos = JSON.parse(dadosSalvos);
+            if (!Array.isArray(produtosObjetos)) {
+                throw new Error("Dados inválidos");
+            }
+            produtosObjetos.forEach((prod) => {
+                if (prod && typeof prod.nome === "string" && prod.nome.trim() !== "" && Number.isFinite(Number(prod.preco)) && Number(prod.preco) > 0 && Number.isInteger(Number(prod.quantidade)) && Number(prod.quantidade) > 0) {
+                    listaDeProdutos.push(new Produto(prod.nome.trim(), prod.preco, prod.quantidade));
+                }
+            });
+        } catch (erro) {
+            listaDeProdutos.length = 0;
+            localStorage.removeItem(CHAVE_STORAGE);
+        }
+    }
+}
+const formProduto = document.getElementById("produto-form");
+const btnLimparTudo = document.getElementById("limpar-tabela");
+const totalEstoqueEl = document.getElementById("total-estoque");
+const btnAdicionar = document.querySelector(".btn-primary");
+const btnCancelarEdicao = document.getElementById("cancelar-edicao");
+// CRUD: Create e Update com validação e cláusulas de guarda
+formProduto.addEventListener("submit", function (event) {
     event.preventDefault();
-
-    const nomeInput = document.getElementById("nome").value;
-    const precoInput = document.getElementById("preco").value;
-    const quantidadeInput = document.getElementById("quantidade").value;
-
-    try {
-        const novoProduto = new Produto(nomeInput, precoInput, quantidadeInput);
-
+    const nome = document.getElementById("nome").value.trim();
+    const preco = parseFloat(document.getElementById("preco").value);
+    const quantidade = Number(document.getElementById("quantidade").value);
+    if (!nome) {
+        alert("Por favor, informe um nome válido para o produto.");
+        return;
+    }
+    if (!Number.isFinite(preco) || preco <= 0 || !Number.isInteger(quantidade) || quantidade <= 0) {
+        alert("O preço deve ser maior que zero e a quantidade deve ser um número inteiro maior que zero.");
+        return;
+    }
+    const novoProduto = new Produto(nome, preco, quantidade);
+    if (indiceEdicao === null) {
         listaDeProdutos.push(novoProduto);
-
-        renderizarTabela();
-        atualizarTotalEstoque();
-        formproduto.reset();
-    } catch (error) {
-        alert(error.message);
+    } else {
+        listaDeProdutos[indiceEdicao] = novoProduto;
+    }
+    salvarNoLocalStorage();
+    atualizarInterface();
+    formProduto.reset();
+    indiceEdicao = null;
+    btnAdicionar.textContent = "Adicionar Produto";
+    btnCancelarEdicao.hidden = true;
+});
+// CRUD: Delete de todos os produtos
+btnLimparTudo.addEventListener("click", function () {
+    if (listaDeProdutos.length === 0) {
+        alert("A tabela já está vazia!");
+        return;
+    }
+    if (confirm("Tem certeza que deseja remover todos os produtos?")) {
+        listaDeProdutos.length = 0;
+        localStorage.removeItem(CHAVE_STORAGE);
+        cancelarEdicao();
+        atualizarInterface();
     }
 });
-
-botaoLimpar.addEventListener("click", function () {
-    listaDeProdutos.length = 0;
-    renderizarTabela();
-    atualizarTotalEstoque();
-});
-
-function removerProduto(index) {
-    listaDeProdutos.splice(index, 1);
-    renderizarTabela();
-    atualizarTotalEstoque();
+// CRUD: Update, preenchendo o formulário com os dados do produto selecionado
+function prepararEdicao(index) {
+    const produto = listaDeProdutos[index];
+    if (!produto) {
+        return;
+    }
+    document.getElementById("nome").value = produto.nome;
+    document.getElementById("preco").value = produto.preco;
+    document.getElementById("quantidade").value = produto.quantidade;
+    indiceEdicao = index;
+    btnAdicionar.textContent = "Salvar Alterações";
+    btnCancelarEdicao.hidden = false;
+    document.getElementById("nome").focus();
 }
-
+function cancelarEdicao() {
+    indiceEdicao = null;
+    formProduto.reset();
+    btnAdicionar.textContent = "Adicionar Produto";
+    btnCancelarEdicao.hidden = true;
+}
+btnCancelarEdicao.addEventListener("click", cancelarEdicao);
+// CRUD: Delete de um produto pelo índice
+function removerProduto(index) {
+    if (indiceEdicao === index) {
+        cancelarEdicao();
+    } else if (indiceEdicao !== null && indiceEdicao > index) {
+        indiceEdicao--;
+    }
+    listaDeProdutos.splice(index, 1);
+    salvarNoLocalStorage();
+    atualizarInterface();
+}
+// CRUD: Read, exibindo os produtos cadastrados
 function atualizarTotalEstoque() {
     const total = listaDeProdutos.reduce((acc, produto) => acc + produto.calcularSubtotal(), 0);
-    totalEstoqueTexto.textContent = `Total em estoque: R$ ${total.toFixed(2).replace('.', ',')}`;
+    totalEstoqueEl.textContent = `Total em estoque: ${total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
 }
-
 function renderizarTabela() {
     const tabelaBody = document.querySelector("#tabela-produtos tbody");
-
     tabelaBody.innerHTML = "";
-
     listaDeProdutos.forEach((produto, index) => {
         const linha = document.createElement("tr");
-
-        linha.innerHTML = `
-        <td>${produto.nome}</td>
-        <td>R$ ${produto.preco.toFixed(2)}</td>
-        <td>${produto.quantidade}</td>
-        <td>R$ ${produto.calcularSubtotal().toFixed(2)}</td>
-        <td>
-            <button class="btn-remover" onclick="removerProduto(${index})">Remover</button>
-        </td>
-        `;
-
+        const celNome = document.createElement("td");
+        const celPreco = document.createElement("td");
+        const celQuantidade = document.createElement("td");
+        const celSubtotal = document.createElement("td");
+        const celAcoes = document.createElement("td");
+        const btnEditar = document.createElement("button");
+        const btnRemover = document.createElement("button");
+        celNome.textContent = produto.nome;
+        celPreco.textContent = produto.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+        celQuantidade.textContent = produto.quantidade;
+        celSubtotal.textContent = produto.calcularSubtotal().toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+        btnEditar.textContent = "Editar";
+        btnEditar.type = "button";
+        btnEditar.className = "btn-editar";
+        btnEditar.addEventListener("click", () => prepararEdicao(index));
+        btnRemover.textContent = "Remover";
+        btnRemover.type = "button";
+        btnRemover.className = "btn-remover";
+        btnRemover.addEventListener("click", () => removerProduto(index));
+        celAcoes.append(btnEditar, btnRemover);
+        linha.append(celNome, celPreco, celQuantidade, celSubtotal, celAcoes);
         tabelaBody.appendChild(linha);
     });
 }
+function atualizarInterface() {
+    renderizarTabela();
+    atualizarTotalEstoque();
+}
+carregarDoLocalStorage();
+atualizarInterface();
