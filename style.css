@@ -1,232 +1,349 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+
+/* ==========================================
+   1. CONFIGURAÇÕES GERAIS E MODO CLARO (ROSA)
+   ========================================== */
+:root {
+    --bg-body: #faf9f6;
+    --bg-container: #ffffff;
+    --border-container: #ffe4e8;
+    --shadow-container: rgba(255, 182, 193, 0.15);
+    --color-text: #4f3f41;
+    --color-text-muted: #8a7375;
+    
+    --input-bg: #ffffff;
+    --input-border: #ffd0d8;
+    --input-focus: #ff69b4;
+    --input-shadow: rgba(255, 105, 180, 0.15);
+    
+    --btn-primary-bg: #ff8da1;
+    --btn-primary-hover: #ff69b4;
+    --btn-primary-text: #ffffff;
+    
+    --btn-danger-bg: #fff0f2;
+    --btn-danger-border: #ffd0d8;
+    --btn-danger-text: #d6284c;
+    --btn-danger-hover: #ffd0d8;
+    
+    --resumo-bg: #fff0f2;
+    --resumo-border: #ffd0d8;
+    --resumo-total: #ff477e;
+    
+    --busca-bg: #fff0f3;
+    --busca-border: #ffccd5;
+    --busca-label: #d6284c;
+    
+    --th-bg: #ffe3e8;
+    --th-text: #ab4758;
+    --th-border: #ffb3c1;
+    --td-border: #fff0f2;
+    --tr-hover: #fff5f7;
+    
+    --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --font-heading: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ==========================================
+   2. VARIÁVEIS DO MODO ESCURO (ROXO CÓSMICO)
+   ========================================== */
+body.dark-mode {
+    --bg-body: #21132f;
+    --bg-container: rgba(255, 250, 255, 0.98);
+    --border-container: rgba(229, 217, 245, 0.8);
+    --shadow-container: rgba(12, 5, 20, 0.3);
+    --color-text: #382c46;
+    --color-text-muted: #786a87;
+    
+    --input-bg: #fdfaff;
+    --input-border: #e5d8f1;
+    --input-focus: #75529a;
+    --input-shadow: rgba(117, 82, 154, 0.12);
+    
+    --btn-primary-bg: linear-gradient(135deg, #75529a, #503568);
+    --btn-primary-hover: linear-gradient(135deg, #8664ad, #61427c);
+    --btn-primary-text: #ffffff;
+    
+    --btn-danger-bg: #f7e5ed;
+    --btn-danger-border: #f0d0dd;
+    --btn-danger-text: #a34665;
+    --btn-danger-hover: #efd0de;
+    
+    --resumo-bg: linear-gradient(135deg, #f4edfc, #ebe0f7);
+    --resumo-border: #e2d2f2;
+    --resumo-total: #302044;
+    
+    --busca-bg: radial-gradient(ellipse at 100% 0%, rgba(185, 156, 219, 0.16), transparent 55%), #faf6ff;
+    --busca-border: #e5d8f1;
+    --busca-label: #503568;
+    
+    --th-bg: linear-gradient(135deg, #503568, #39254d);
+    --th-text: #ffffff;
+    --th-border: #503568;
+    --td-border: #eee6f5;
+    --tr-hover: #f0e7fa;
+    
+    --font-primary: 'DM Sans', Arial, sans-serif;
+    --font-heading: 'Playfair Display', Georgia, serif;
+}
+
+/* ==========================================
+   3. ESTILOS BASE E ESTRUTURA
+   ========================================== */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background-color: #faf9f6; /* Off-white limpo e elegante */
-    color: #4f3f41; /* Texto cinza escuro levemente rosado para suavizar */
-    padding: 20px;
+    min-height: 100vh;
+    padding: 30px 20px;
+    font-family: var(--font-primary);
+    color: var(--color-text);
+    background-color: var(--bg-body);
+    transition: background-color 0.3s ease;
 }
 
-/* Oculta a tag img crua para evitar duplicações desordenadas */
-.container > img {
-    display: none;
+/* Fundo espacial apenas no Modo Escuro */
+body.dark-mode {
+    background-image:
+        radial-gradient(ellipse at 10% 10%, rgba(137, 92, 181, 0.25), transparent 35%),
+        radial-gradient(ellipse at 90% 85%, rgba(102, 74, 139, 0.22), transparent 35%),
+        radial-gradient(2px 2px at 15% 25%, #d9c4fa 50%, transparent 100%),
+        radial-gradient(2px 2px at 85% 15%, #d9c4fa 50%, transparent 100%),
+        radial-gradient(1px 1px at 75% 55%, #ffffff 50%, transparent 100%),
+        radial-gradient(2px 2px at 25% 80%, #b99cdb 50%, transparent 100%),
+        radial-gradient(1px 1px at 90% 70%, #ffffff 50%, transparent 100%);
+    background-attachment: fixed;
 }
 
-/* ==========================================
-   ⚙️ CONFIGURAÇÃO DA FOTO "paula.jpg" 
-   ========================================== */
-.foto-perfil {
-    position: absolute;
-    top: 25px;
-    right: 25px;
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    border: 2px solid #ff8da1; /* Troca do dourado por uma borda Rosa Bem Definida */
-    box-shadow: 0 4px 15px rgba(255, 141, 161, 0.2);
-    background-image: url('paula.jpg'); 
-    background-size: cover;
-    background-position: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.foto-perfil:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(255, 141, 161, 0.35);
+/* Botão Flutuante do Tema */
+.btn-theme {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1000;
+    padding: 10px 15px;
+    background-color: var(--bg-container);
+    color: var(--color-text);
+    border: 1px solid var(--input-border);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    font-weight: bold;
 }
 
 .container {
-    max-width: 850px;
-    background-color: #ffffff;
-    margin: 30px auto;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(255, 182, 193, 0.15); /* Sombra sutilmente rosada */
     position: relative;
-    border: 1px solid #ffe4e8;
+    max-width: 900px;
+    margin: 25px auto;
+    padding: 35px;
+    background: var(--bg-container);
+    border: 1px solid var(--border-container);
+    border-radius: 22px;
+    box-shadow: 0 20px 60px var(--shadow-container);
 }
-label {
-    font-weight: 600;
-    font-size: 13px;
-    color: #8a7375; /* Tom neutro rosado opaco */
-    display: inline-block;
-    margin-bottom: 4px;
+
+/* ==========================================
+   4. COMPONENTES E ELEMENTOS
+   ========================================== */
+
+/* Foto de Perfil Unificada */
+.foto-perfil {
+    position: absolute;
+    top: 22px;
+    right: 24px;
+    width: 65px;
+    height: 65px;
+    padding: 3px;
+    overflow: hidden;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff8da1, #ff69b4);
+    box-shadow: 0 4px 15px rgba(255, 141, 161, 0.2);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+body.dark-mode .foto-perfil {
+    background: linear-gradient(135deg, #d8c0f3, #75529a, #503568);
+    box-shadow: 0 3px 12px rgba(80, 53, 104, 0.25);
+}
+
+.foto-perfil img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+}
+
+.icone-foto { display: none; }
+.foto-perfil.sem-foto {
+    background: linear-gradient(135deg, #ff8da1, #ff477e);
+}
+body.dark-mode .foto-perfil.sem-foto {
+    background: linear-gradient(135deg, #503568, #9270bd);
+}
+.foto-perfil.sem-foto .icone-foto {
+    display: block;
+    color: #ffffff;
+    font-size: 22px;
+}
+
+/* Tipografia */
+h1 {
+    padding: 0 75px;
+    margin-bottom: 8px;
+    font-family: var(--font-heading);
+    font-size: 32px;
+    text-align: center;
+    color: var(--input-focus);
+}
+body.dark-mode h1 {
+    color: #302044;
+}
+
+.subtitulo {
+    margin-bottom: 30px;
+    color: var(--color-text-muted);
+    font-size: 12px;
+    text-align: center;
+    letter-spacing: 0.3px;
+}
+
+.resumo-legenda {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--busca-label);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+}
+
+.rodape {
+    margin-top: 30px;
+    color: var(--color-text-muted);
+    font-size: 11px;
+    text-align: center;
+}
+
+/* Formulários & Inputs */
+form { display: flex; flex-direction: column; gap: 18px; margin-bottom: 30px; }
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+label { color: var(--color-text); font-size: 13px; font-weight: 700; }
+
 input {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #ffd0d8; /* Borda dos inputs em rosa pastel evidente */
-    border-radius: 8px;
-    font-size: 15px;
-    color: #4f3f41;
-    background-color: #ffffff;
-    transition: all 0.2s ease;
+    padding: 13px 15px;
+    font-family: inherit;
+    font-size: 14px;
+    color: inherit;
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 10px;
+    outline: none;
+    transition: all 0.25s ease;
 }
 input:focus {
-    outline: none;
-    border-color: #ff69b4; /* Foco acende em Rosa Chiclete */
-    box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.15);
+    border-color: var(--input-focus);
+    box-shadow: 0 0 0 4px var(--input-shadow);
 }
-h1 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #ff69b4; /* Título principal em Rosa Vibrante/Normal */
-    font-size: 26px;
-    font-weight: 700;
-    padding-right: 70px;
-    letter-spacing: -0.5px;
-}
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-bottom: 30px;
-}
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
+
+/* Botões */
 button {
     padding: 12px 18px;
-    font-size: 14px;
-    font-weight: 600;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
     border: none;
-    border-radius: 8px;
+    border-radius: 9px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
+button:hover { transform: translateY(-2px); }
+button:active { transform: translateY(0); }
+
 .btn-primary {
-    background-color: #ff8da1; /* Botão de Adicionar em Rosa Normal Médio */
-    color: #ffffff;
+    color: var(--btn-primary-text);
+    background: var(--btn-primary-bg);
 }
-.btn-primary:hover {
-    background-color: #ff69b4;
-    transform: translateY(-1px);
-}
-.btn-danger {
-    background-color: #fff0f2; /* Fundo rosa bem clarinho */
-    color: #d6284c; /* Texto em rosa escuro/vermelho neutro para o perigo */
-    border: 1px solid #ffd0d8;
-}
-.btn-danger:hover {
-    background-color: #ffd0d8;
-}
+.btn-primary:hover { background: var(--btn-primary-hover); }
+
 .btn-cancelar {
-    background-color: #f5f5f4;
-    color: #78716c;
-    border: 1px solid #e7e5e4;
+    color: var(--color-text);
+    background-color: #e8def4;
+    border: 1px solid var(--input-border);
 }
-.btn-cancelar:hover {
-    background-color: #e7e5e4;
+
+.btn-danger {
+    color: var(--btn-danger-text);
+    background-color: var(--btn-danger-bg);
+    border: 1px solid var(--btn-danger-border);
 }
+.btn-danger:hover { background-color: var(--btn-danger-hover); }
+
+/* Containers Especiais */
 .resumo-container {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 24px;
-    padding-top: 24px;
-    border-top: 2px dashed #ffd0d8; /* Divisor tracejado rosa */
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 22px;
+    padding: 20px;
+    background: var(--resumo-bg);
+    border: 1px solid var(--resumo-border);
+    border-radius: 14px;
 }
-#total-estoque {
-    font-size: 18px;
-    color: #ff477e; /* Destaque numérico em tom rosa escuro vibrante */
-    font-weight: 700;
-}
+#total-estoque { color: var(--resumo-total); font-size: 18px; font-weight: 700; }
 
-/* V4: Caixa de Busca Dinâmica com Fundo Rosa Claro */
 .busca-container {
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 10px;
     margin-bottom: 24px;
-    padding: 16px;
-    background-color: #fff0f3; /* Fundo rosa algodão doce */
-    border: 1px solid #ffccd5;
-    border-radius: 10px;
+    padding: 20px;
+    background: var(--busca-bg);
+    border: 1px solid var(--busca-border);
+    border-radius: 14px;
 }
-.busca-container label {
-    color: #d6284c; /* Legenda combinando com o contexto rosa */
-}
-.busca-container input {
-    border: 1px solid #ffd0d8;
-    background-color: #ffffff;
-}
+.busca-container label { color: var(--busca-label); }
+#quantidade-produtos { color: var(--color-text-muted); font-size: 12px; }
 
-table {
+/* Tabelas */
+.tabela-container {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
+    overflow-x: auto;
+    border: 1px solid var(--busca-border);
+    border-radius: 12px;
 }
-th, td {
-    padding: 14px;
-    text-align: center;
-    font-size: 14px;
-}
+table { width: 100%; border-collapse: separate; border-spacing: 0; background: #fff; }
+th, td { padding: 14px 10px; text-align: center; font-size: 13px; }
 th {
-    background-color: #ffe3e8; /* Cabeçalho da tabela rosa médio */
-    color: #ab4758;
-    font-weight: 600;
-    border-bottom: 2px solid #ffb3c1;
+    color: var(--th-text);
+    background: var(--th-bg);
+    font-weight: 700;
+    border-bottom: 2px solid var(--th-border);
 }
-td {
-    border-bottom: 1px solid #fff0f2;
-    background-color: #ffffff;
-    color: #5c4749;
-}
-tbody tr:hover td {
-    background-color: #fff5f7; /* Hover sutil e puramente rosado nas linhas */
-}
-.mensagem-vazia {
-    padding: 30px;
-    color: #baa3a6;
-    font-style: italic;
-    background-color: #ffffff;
-}
+td { border-bottom: 1px solid var(--td-border); color: #444; }
+tbody tr:hover td { background-color: var(--tr-hover); }
+.mensagem-vazia { padding: 30px; color: #baa3a6; font-style: italic; }
 
-.btn-remover {
-    background-color: transparent;
-    color: #d6284c;
+.btn-remover, .btn-editar {
+    background: transparent;
     padding: 6px 12px;
     font-size: 13px;
-    margin: 2px;
-    border-radius: 6px;
     font-weight: 600;
-    transition: background-color 0.2s;
 }
-.btn-remover:hover {
-    background-color: #fff0f2;
-}
-.btn-editar {
-    background-color: transparent;
-    color: #ff69b4; /* Ação de editar destacada no rosa clássico */
-    padding: 6px 12px;
-    font-size: 13px;
-    margin: 2px;
-    border-radius: 6px;
-    font-weight: 600;
-    transition: background-color 0.2s;
-}
-.btn-editar:hover {
-    background-color: #fff0f2;
-}
-[hidden] {
-    display: none !important;
-}
+.btn-remover { color: #d6284c; }
+.btn-editar { color: #ff69b4; }
+body.dark-mode .btn-editar { color: #75529a; }
+
+[hidden] { display: none !important; }
 
 @media (max-width: 600px) {
-    .foto-perfil {
-        position: static;
-        margin: 0 auto 20px auto;
-        display: block;
-    }
-    h1 {
-        padding-right: 0;
-    }
-    .container {
-        padding: 16px;
-    }
+    .foto-perfil { top: 15px; right: 15px; width: 48px; height: 48px; }
+    h1 { padding: 0; font-size: 24px; }
+    .container { padding: 20px; }
+    .resumo-container { flex-direction: column; text-align: center; }
 }
