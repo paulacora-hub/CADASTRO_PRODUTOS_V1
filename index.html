@@ -3,35 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Estoque</title>
+    <title>Sistema de Estoque - V5</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Botão de alternar tema fixo -->
-    <button id="toggle-tema" class="btn-theme" type="button">🌓 Mudar Tema</button>
+     <button id="toggle-tema" class="btn-theme" type="button" aria-label="Alternar tema">
+        <svg class="icone-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <span>Mudar Tema</span>
+    </button>
 
+    <button id="btn-bootstrap-info" class="btn-bootstrap" type="button">
+        <svg class="icone-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+        </svg>
+        <span>Conceito Bootstrap</span>
+    </button>
     <div class="container">
-        <!-- Estrutura de foto unificada -->
         <div class="foto-perfil">
-            <img src="p&m.jpeggit " alt="Foto de perfil" id="imagem-perfil"
-                 onerror="this.style.display='none'; this.parentElement.classList.add('sem-foto');">
+            <img src="p&m.jpeg" alt="Foto de perfil" id="imagem-perfil" onerror="this.style.display='none'; this.parentElement.classList.add('sem-foto');">
             <span class="icone-foto">✦</span>
         </div>
 
         <h1 id="titulo-principal">Cadastro de produto</h1>
         <p class="subtitulo" id="subtitulo-magico">✧ Organize seu estoque com um toque de magia ✧</p>
 
-        <form id="produto-form">
+        <form id="produto-form" novalidate>
+            <div id="mensagem-erro" class="mensagem-inline" role="alert" hidden></div>
+
             <div class="form-group">
                 <label for="nome">Nome do produto:</label>
                 <input type="text" id="nome" placeholder="Ex: Notebook" required>
             </div>
-
             <div class="form-group">
                 <label for="preco">Preço (R$):</label>
                 <input type="number" id="preco" step="0.01" min="0.01" placeholder="Ex: 3500.00" required>
             </div>
-
             <div class="form-group">
                 <label for="quantidade">Quantidade:</label>
                 <input type="number" id="quantidade" min="1" step="1" placeholder="Ex: 5" required>
@@ -71,6 +81,33 @@
         </div>
 
         <p class="rodape" id="rodape-magico">✧ Feito com cuidado, entre estrelas e lavandas ✧</p>
+    </div>
+
+    <div id="modal-confirmacao" class="modal-overlay" hidden>
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-confirm-titulo">
+            <h2 id="modal-confirm-titulo">Confirmar Exclusão</h2>
+            <p id="modal-confirm-texto">Tem certeza que deseja realizar esta ação?</p>
+            <div class="modal-acoes">
+                <button type="button" id="btn-modal-cancelar" class="btn-cancelar">Cancelar</button>
+                <button type="button" id="btn-modal-confirmar" class="btn-danger">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-bootstrap" class="modal-overlay" hidden>
+        <div class="modal-box modal-box-lg" role="dialog" aria-modal="true" aria-labelledby="modal-boot-titulo">
+            <h2 id="modal-boot-titulo">✦ Conceito Bootstrap & UI Moderna</h2>
+            <div class="modal-conteudo-texto">
+                <p><strong>O que é o Bootstrap?</strong><br>
+                É um framework front-end de código aberto que oferece componentes prontos (como <em>Modals</em>, <em>Alerts</em>, <em>Buttons</em> e <em>Grid System</em>) e classes utilitárias para acelerar a criação de interfaces responsivas.</p>
+                
+                <p><strong>Como aplicamos na Versão 5:</strong><br>
+                Nesta versão, aplicamos os conceitos visuais e de usabilidade dos componentes <code>.alert</code> e <code>.modal</code> do Bootstrap utilizando CSS customizado e variáveis dinâmicas, mantendo a identidade visual exclusiva do projeto sem bloqueios na tela.</p>
+            </div>
+            <div class="modal-acoes">
+                <button type="button" id="btn-fechar-bootstrap" class="btn-primary">Entendi</button>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>

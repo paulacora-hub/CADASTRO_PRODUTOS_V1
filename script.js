@@ -2,7 +2,7 @@ class Produto {
     constructor(nome, preco, quantidade) {
         this.nome = nome;
         this.preco = parseFloat(preco);
-        this.quantidade = parseInt(quantidade);
+        this.quantidade = parseInt(quantidade, 10);
     }
     calcularSubtotal() {
         return this.preco * this.quantidade;
@@ -13,8 +13,9 @@ const listaDeProdutos = [];
 const CHAVE_STORAGE = "sistema_estoque_produtos";
 const CHAVE_TEMA = "sistema_estoque_tema";
 let indiceEdicao = null;
+let timeoutMensagem = null;
 
-// CARREGAR DADOS DO LOCAL STORAGE
+
 function carregarDoLocalStorage() {
     const dadosSalvos = localStorage.getItem(CHAVE_STORAGE);
     if (dadosSalvos) {
@@ -40,29 +41,116 @@ function salvarNoLocalStorage() {
     localStorage.setItem(CHAVE_STORAGE, JSON.stringify(listaDeProdutos));
 }
 
-// CAPTURA DE COMPONENTES DOM
+
 const formProduto = document.getElementById("produto-form");
 const btnLimparTudo = document.getElementById("limpar-tabela");
 const totalEstoqueEl = document.getElementById("total-estoque");
-const btnAdicionar = document.querySelector(".btn-primary");
+const btnAdicionar = document.getElementById("btn-submit-form");
 const btnCancelarEdicao = document.getElementById("cancelar-edicao");
 const campoBusca = document.getElementById("campo-busca");
 const qtdProdutosEl = document.getElementById("quantidade-produtos");
 const btnToggleTema = document.getElementById("toggle-tema");
+const mensagemErroEl = document.getElementById("mensagem-erro");
 
-// SUBMIT DO FORMULÁRIO (CREATE / UPDATE)
+
+const modalConfirmacao = document.getElementById("modal-confirmacao");
+const modalConfirmTexto = document.getElementById("modal-confirm-texto");
+const btnModalConfirmar = document.getElementById("btn-modal-confirmar");
+const btnModalCancelar = document.getElementById("btn-modal-cancelar");
+
+const btnBootstrapInfo = document.getElementById("btn-bootstrap-info");
+const modalBootstrap = document.getElementById("modal-bootstrap");
+const btnFecharBootstrap = document.getElementById("btn-fechar-bootstrap");
+
+
+function exibirMensagemInline(texto, tipo = "erro") {
+    clearTimeout(timeoutMensagem);
+    mensagemErroEl.textContent = texto;
+    mensagemErroEl.classList.remove("sucesso");
+    if (tipo === "sucesso") {
+        mensagemErroEl.classList.add("sucesso");
+    }
+    mensagemErroEl.hidden = false;
+
+    timeoutMensagem = setTimeout(() => {
+        ocultarMensagemInline();
+    }, 4500);
+}
+
+function ocultarMensagemInline() {
+    clearTimeout(timeoutMensagem);
+    mensagemErroEl.hidden = true;
+    mensagemErroEl.textContent = "";
+    mensagemErroEl.classList.remove("sucesso");
+}
+
+
+function abrirModalConfirmacao(mensagem) {
+    return new Promise((resolve) => {
+        modalConfirmTexto.textContent = mensagem;
+        modalConfirmacao.hidden = false;
+        btnModalCancelar.focus();
+
+        function finalizar(resposta) {
+            modalConfirmacao.hidden = true;
+            btnModalConfirmar.removeEventListener("click", aoConfirmar);
+            btnModalCancelar.removeEventListener("click", aoCancelar);
+            modalConfirmacao.removeEventListener("click", aoClicarFora);
+            document.removeEventListener("keydown", aoPressionarEsc);
+            resolve(resposta);
+        }
+
+        function aoConfirmar() { finalizar(true); }
+        function aoCancelar() { finalizar(false); }
+        function aoClicarFora(e) {
+            if (e.target === modalConfirmacao) finalizar(false);
+        }
+        function aoPressionarEsc(e) {
+            if (e.key === "Escape") finalizar(false);
+        }
+
+        btnModalConfirmar.addEventListener("click", aoConfirmar);
+        btnModalCancelar.addEventListener("click", aoCancelar);
+        modalConfirmacao.addEventListener("click", aoClicarFora);
+        document.addEventListener("keydown", aoPressionarEsc);
+    });
+}
+
+btnBootstrapInfo.addEventListener("click", () => {
+    modalBootstrap.hidden = false;
+    btnFecharBootstrap.focus();
+});
+
+btnFecharBootstrap.addEventListener("click", () => {
+    modalBootstrap.hidden = true;
+});
+
+modalBootstrap.addEventListener("click", (e) => {
+    if (e.target === modalBootstrap) {
+        modalBootstrap.hidden = true;
+    }
+});
 formProduto.addEventListener("submit", function (event) {
     event.preventDefault();
+    ocultarMensagemInline();
+
     const nome = document.getElementById("nome").value.trim();
     const preco = parseFloat(document.getElementById("preco").value);
     const quantidade = Number(document.getElementById("quantidade").value);
 
     if (!nome) {
-        alert("Por favor, informe um nome válido para o produto.");
+        exibirMensagemInline("⚠ Por favor, informe um nome válido para o produto.");
+        document.getElementById("nome").focus();
         return;
     }
-    if (!Number.isFinite(preco) || preco <= 0 || !Number.isInteger(quantidade) || quantidade <= 0) {
-        alert("O preço deve ser maior que zero e a quantidade deve ser um número inteiro maior que zero.");
+    if (!Number.isFinite(preco) || preco <= 0) {
+        exibirMensagemInline("⚠ O preço deve ser um valor numérico maior que zero.");
+        document.getElementById("preco").focus();
+        return;
+    }
+    if (!Number.isInteger(quantidade) || quantidade <= 0) {
+        exibirMensagemInline("⚠ A quantidade deve ser um número inteiro maior que zero.");
+        document.getElementById("quantidade").focus();
         return;
     }
 
@@ -70,6 +158,7 @@ formProduto.addEventListener("submit", function (event) {
 
     if (indiceEdicao === null) {
         listaDeProdutos.push(novoProduto);
+        exibirMensagemInline("✦ Produto adicionado ao estoque com sucesso!", "sucesso");
     } else {
         const produtosFiltrados = obterProdutosFiltrados();
         const produtoEditado = produtosFiltrados[indiceEdicao];
@@ -77,6 +166,7 @@ formProduto.addEventListener("submit", function (event) {
        
         if (indiceReal !== -1) {
             listaDeProdutos[indiceReal] = novoProduto;
+            exibirMensagemInline("✦ Alterações salvas com sucesso!", "sucesso");
         }
     }
 
@@ -88,22 +178,29 @@ formProduto.addEventListener("submit", function (event) {
     btnCancelarEdicao.hidden = true;
 });
 
-// REMOVER TUDO (DELETE COMPLETO)
-btnLimparTudo.addEventListener("click", function () {
+
+btnLimparTudo.addEventListener("click", async function () {
     if (listaDeProdutos.length === 0) {
-        alert("A tabela já está vazia!");
+        exibirMensagemInline("⚠ A tabela já está vazia! Não há produtos para remover.");
         return;
     }
-    if (confirm("Tem certeza que deseja remover todos os produtos?")) {
+
+    const confirmado = await abrirModalConfirmacao(
+        `Tem certeza que deseja apagar todos os ${listaDeProdutos.length} produto(s) do estoque? Esta ação não pode ser desfeita.`
+    );
+
+    if (confirmado) {
         listaDeProdutos.length = 0;
         localStorage.removeItem(CHAVE_STORAGE);
         cancelarEdicao();
         atualizarInterface();
+        exibirMensagemInline("✦ Todo o estoque foi limpo com sucesso.", "sucesso");
     }
 });
 
-// PREPARAR E CANCELAR EDIÇÃO
+
 function prepararEdicao(index) {
+    ocultarMensagemInline();
     const produtosFiltrados = obterProdutosFiltrados();
     const produto = produtosFiltrados[index];
    
@@ -122,18 +219,25 @@ function prepararEdicao(index) {
 function cancelarEdicao() {
     indiceEdicao = null;
     formProduto.reset();
+    ocultarMensagemInline();
     btnAdicionar.textContent = "Adicionar Produto";
     btnCancelarEdicao.hidden = true;
 }
 btnCancelarEdicao.addEventListener("click", cancelarEdicao);
 
-// REMOVER PRODUTO ÚNICO
-function removerProduto(index) {
+
+async function removerProduto(index) {
     const produtosFiltrados = obterProdutosFiltrados();
     const produtoParaRemover = produtosFiltrados[index];
     const indiceReal = listaDeProdutos.indexOf(produtoParaRemover);
 
     if (indiceReal === -1) return;
+
+    const confirmado = await abrirModalConfirmacao(
+        `Deseja realmente remover "${produtoParaRemover.nome}" do estoque?`
+    );
+
+    if (!confirmado) return;
 
     if (indiceEdicao === index) {
         cancelarEdicao();
@@ -144,9 +248,10 @@ function removerProduto(index) {
     listaDeProdutos.splice(indiceReal, 1);
     salvarNoLocalStorage();
     atualizarInterface();
+    exibirMensagemInline(`✦ Produto "${produtoParaRemover.nome}" removido.`, "sucesso");
 }
 
-// FILTRAGEM AVANÇADA (REVISADA E CONCLUÍDA)
+
 function obterProdutosFiltrados() {
     const termoBusca = campoBusca.value.toLowerCase().trim();
     return listaDeProdutos.filter(produto => 
@@ -154,7 +259,14 @@ function obterProdutosFiltrados() {
     );
 }
 
-// ATUALIZAR TOTAL DO ESTOQUE
+campoBusca.addEventListener("input", () => {
+    if (indiceEdicao !== null) {
+        cancelarEdicao();
+    }
+    atualizarInterface();
+});
+
+
 function atualizarTotalEstoque() {
     const produtosVisiveis = obterProdutosFiltrados();
     const total = produtosVisiveis.reduce((acc, produto) => acc + produto.calcularSubtotal(), 0);
@@ -162,7 +274,7 @@ function atualizarTotalEstoque() {
     qtdProdutosEl.textContent = `Produtos encontrados: ${produtosVisiveis.length}`;
 }
 
-// RENDERIZAR TABELA DADOS
+
 function renderizarTabela() {
     const tabelaBody = document.querySelector("#tabela-produtos tbody");
     tabelaBody.innerHTML = "";
@@ -222,48 +334,20 @@ function atualizarInterface() {
     atualizarTotalEstoque();
 }
 
-// GERENCIAMENTO DA MUDANÇA DE TEMA DINÂMICA
 function alternarTema() {
     const isDark = document.body.classList.toggle("dark-mode");
     localStorage.setItem(CHAVE_TEMA, isDark ? "dark" : "light");
-    ajustarTextosTema(isDark);
 }
 
-function ajustarTextosTema(isDark) {
-    const subtitulo = document.getElementById("subtitulo-magico");
-    const legenda = document.getElementById("legenda-resumo");
-    const labelBusca = document.getElementById("label-busca");
-    const rodape = document.getElementById("rodape-magico");
-
-    if (isDark) {
-        subtitulo.textContent = "✧ Organize seu estoque com um toque de magia ✧";
-        legenda.textContent = "✧ RESUMO DO ESTOQUE";
-        labelBusca.textContent = "✦ Pesquisar produto";
-        rodape.textContent = "✧ Feito com cuidado, entre estrelas e lavandas ✧";
-    } else {
-        subtitulo.textContent = "Gerencie seus itens cadastrados de forma simples";
-        legenda.textContent = "RESUMO DOS VALORES";
-        labelBusca.textContent = "Filtrar por nome:";
-        rodape.textContent = "Sistema de Controle de Estoque Corporativo";
-    }
-}
-
-// INICIALIZAÇÃO DO TEMA SALVO
 function carregarTemaSalvo() {
     const temaSalvo = localStorage.getItem(CHAVE_TEMA);
-    const prefereEscuro = temaSalvo === "dark";
-    
-    if (prefereEscuro) {
+    if (temaSalvo === "dark") {
         document.body.classList.add("dark-mode");
     }
-    ajustarTextosTema(prefereEscuro);
 }
 
-// OUVINTES DE EVENTOS (LISTENERS)
-campoBusca.addEventListener("input", atualizarInterface);
 btnToggleTema.addEventListener("click", alternarTema);
 
-// START DO SISTEMA
 carregarTemaSalvo();
 carregarDoLocalStorage();
 atualizarInterface();
